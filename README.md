@@ -20,3 +20,11 @@ The purpose of the current project is to create the fastest force directed graph
 Why an Octree?
 ============================
 Octrees are a way of spatially dividing the 3D space. They allow us to aggregate multiple points in to a single Octree Node, reducing the run time from O(N) to O(log N) for each node on the graph. This reduces each iteration's run time from O(N^2) to O(N log N). 
+
+Next Steps
+============================
+* Speed Improvments
+  * Moving much of Layout Engine to GPU Shader code
+  * Rewriting the view controller
+* UI improvements to render similar as former project (write GPU Shaders)
+* Moving Octree to its own project repository
