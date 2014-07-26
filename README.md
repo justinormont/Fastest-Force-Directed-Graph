@@ -26,5 +26,6 @@ Next Steps
 * Speed Improvments
   * Moving much of Layout Engine to GPU Shader code
   * Rewriting the view controller
+  * Perf test Octree splitting huristics (Octree node midpoint [current], average position, median position, etc)
 * UI improvements to render similar as former project (write GPU Shaders)
 * Moving Octree to its own project repository
