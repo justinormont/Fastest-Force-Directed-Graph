@@ -15,7 +15,7 @@ Info: http://blog.launch.co/blog/take-that-google-interactive-google-stream-visu
 Current Project
 ============================
 The purpose of the current project is to create the fastest force directed graph in JavaScript. The layout engine is backed by an Octree for performance. The rendering is Three.js. 
-![Screen Shot](https://github.com/justinormont/Fastest-Force-Directed-Graph/blob/master/ScreenShots/300%20Nodes%20%232%202014-07-31.png "Force Directed Graph Backed by an Octree")
+![Screen Shot](https://github.com/justinormont/Fastest-Force-Directed-Graph/blob/master/ScreenShots/300%20Nodes%20%233%202014-07-31.png "Force Directed Graph Backed by an Octree")
 
 Why an Octree?
 ============================
