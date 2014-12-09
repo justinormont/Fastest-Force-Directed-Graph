@@ -17,6 +17,8 @@ Current Project
 The purpose of the current project is to create the fastest force directed graph in JavaScript. The layout engine is backed by an Octree for performance. The rendering is Three.js. 
 ![Screen Shot](https://github.com/justinormont/Fastest-Force-Directed-Graph/blob/master/ScreenShots/300%20Nodes%20%233%202014-07-31.png "Force Directed Graph Backed by an Octree")
 
+![Screen Shot](https://raw.githubusercontent.com/justinormont/Fastest-Force-Directed-Graph/master/ScreenShots/Snark56%2050%25%202014-12-09.gif "Force Directed Graph Backed by an Octree")
+
 Why an Octree?
 ============================
 Octrees are a way of spatially dividing the 3D space. They allow us to aggregate multiple points in to a single Octree Node, reducing the run time from O(N) to O(log N) for each node on the graph. This reduces each iteration's run time from O(N^2) to O(N log N). 
