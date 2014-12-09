@@ -70,6 +70,7 @@ Models.NodeList.prototype.getNodeCount = function() {
 	return this.nodeCount;
 }
 
+
 Models.NodeList.prototype.addVerticies = function(fromNode, toNodes) {
 	"use strict";
 	
@@ -78,8 +79,16 @@ Models.NodeList.prototype.addVerticies = function(fromNode, toNodes) {
 	this.addNodes(toNodes); // Make sure we have the nodes in the graph before connecting them to other nodes
 	
 	this.runOnObjOrListOfObj(toNodes, function(toNode) {
-		that.pushDistinct(fromNode.verticies, new that.Vertex(fromNode, toNode), that.Vertex.prototype.indexOfVertex);
-		that.pushDistinct(toNode.verticies, new that.Vertex(toNode, fromNode), that.Vertex.prototype.indexOfVertex);
+		var forwardVertex, backwardsVertex;
+		
+		forwardVertex = new that.Vertex(toNode, fromNode);
+		backwardsVertex = new that.Vertex(fromNode, toNode);
+		
+		forwardVertex.reverseVertex = backwardsVertex;
+		backwardsVertex.reverseVertex = forwardVertex;
+		
+		that.pushDistinct(fromNode.verticies, backwardsVertex, that.Vertex.prototype.indexOfVertex);
+		that.pushDistinct(toNode.verticies, forwardVertex, that.Vertex.prototype.indexOfVertex);
 	});
 	
 	return this;
@@ -183,6 +192,7 @@ Models.NodeList.prototype.Node.prototype.init = function() {
 	
 	this.id;
 	this.weight = 1;
+	this.scale = 1;
 	
 	this.renderingObj = null; // Link to the object in the rendering system
 	
@@ -193,18 +203,21 @@ Models.NodeList.prototype.Node.prototype.init = function() {
 	return this;
 }
 
-Models.NodeList.prototype.Node.prototype.resetPositionAndVelocity = function() {
+Models.NodeList.prototype.Node.prototype.resetPositionAndVelocity = function(randomize) {
 	"use strict";
 	
-	//this.x = 0;
-	//this.y = 0;
-	//this.z = 0;
-	this.x = (Math.random()-0.5)*5000;
-	this.y = (Math.random()-0.5)*5000;
-	this.z = (Math.random()-0.5)*5000;
-	
-	//this.velocity = [0, 0, 0];
-	this.velocity = [Math.random()-0.5, Math.random()-0.5, Math.random()-0.5];
+	if (randomize===false) {
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		this.velocity = [0, 0, 0];
+	}
+	else {
+		this.x = (Math.random()-0.5)*5000;
+		this.y = (Math.random()-0.5)*5000;
+		this.z = (Math.random()-0.5)*5000;
+		this.velocity = [Math.random()-0.5, Math.random()-0.5, Math.random()-0.5];
+	}
 	
 	return this;
 }

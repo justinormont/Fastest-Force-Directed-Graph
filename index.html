@@ -1,26 +1,50 @@
 <html>
 <head>
-    <title>Force Directed OctTree</title>
-    <!--<script src="webgl-frameworks/three.min.js"></script>-->
-    <script src="webgl-frameworks/Three.js"></script>
-    <script src="utils/Stats.js"></script>
-    <script src="utils/TrackballControls.js"></script>
-    <script src="utils/Label.js"></script>
-    <script src="utils/ObjectSelection.js"></script>
-
+<title>Force Directed Octree</title>
+	<script src="utils/RequestAnimationFrame.js"></script>
+	<script src="webgl-frameworks/r69/three.min.js"></script>
+	 
+	<script src="utils/Stats.js"></script>
+	<script src="utils/TrackballControls.js"></script>
+	<script src="utils/Label.js"></script>
+	<script src="utils/ObjectSelection.js"></script>
+	
 	<script src="Controllers/ForceDirected.js"></script>
-	<script src="Controllers/ForceDirectedOctTree.js"></script>
-	<script src="Controllers/OctTree.js"></script>
+	<script src="Controllers/ForceDirectedOctree.js"></script>
+	<script src="Controllers/Octree.js"></script>
 	<script src="Models/NodeList.js"></script>
 	<script src="Views/ThreeJSRenderer.js"></script>
 	<script src="Views/NullRenderer.js"></script>
 	
 	<script src="index.js"></script>
-
 </head>
-<body onload="init()">
+<body onload="init()" style="background-color: black; margin: 0px">
+	<div style="cursor: pointer; width: 300px; opacity: 0.9; z-index: 10001; position: absolute; top: 0px;right:0px">
+		<div style="padding: 2px 0px 3px; background-color: rgb(8, 8, 24);">
+			<div style="font-family: Helvetica, Arial, sans-serif; text-align: left; font-size: 9px; color: rgb(0, 255, 255); margin: 0px 0px 1px 3px;">
+				<span style="font-weight:bold">Load Mesh </span>
+				<select onchange="document.location.search='?mesh='+this.value" id="meshName">
+					<option value="" selected></option>
+					<option value="">Random Tree</option>
+					<option value="Snark56">Snark56</option>
+					<option value="Blimp">Blimp</option>
+					<option value="Pipes">Pipes</option>
+					<option value="Balaban11Cage">Balaban11Cage</option>
+					<option value="BiggsSmith">BiggsSmith</option>
+					<option value="CubeOversampled">CubeOversampled</option>
+					<option value="Dodecahedral">Dodecahedral</option>
+					<option value="FlowerNonSnark40">FlowerNonSnark40</option>
+					<option value="HoleSphere5">HoleSphere5</option>
+					<option value="Mannequin">Mannequin</option>
+					<option value="SzekeresSnark">SzekeresSnark</option>
+					<option value="TreTwist">TreTwist</option>
+					<option value="WatkinsSnark">WatkinsSnark</option>
+				</select>
+			</div>
+		</div>
+	</div>
 	<script>
-			
+		
 	</script>
 </body>
 </html>
