@@ -18,6 +18,8 @@ The purpose of the current project is to create the fastest force directed graph
 ![Screen Shot](https://github.com/justinormont/Fastest-Force-Directed-Graph/blob/master/ScreenShots/300%20Nodes%20%233%202014-07-31.png "Force Directed Graph Backed by an Octree")
 
 ![Screen Shot](https://raw.githubusercontent.com/justinormont/Fastest-Force-Directed-Graph/master/ScreenShots/Snark56%2050%25%202014-12-09.gif "Force Directed Graph Backed by an Octree")
+![Screen Shot](https://raw.githubusercontent.com/justinormont/Fastest-Force-Directed-Graph/master/ScreenShots/250%20Nodes%2050%25%202014-12-09.gif "Force Directed Graph Backed by an Octree")
+
 
 Why an Octree?
 ============================
