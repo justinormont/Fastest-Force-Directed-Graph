@@ -97,7 +97,7 @@ Controllers.ForceDirected.prototype.calculateStep = function() {
 	
 	var innerCalculateStep = function() { // Needed to preserve the 'this' pointer
 		
-		var nodes, springForce, coulombForce, totalForceOnNode=[0,0,0], numNodes, nodeIndex, node, vertexIndex, vertex, timeDiff=0.06, totalSpeed, weightTime;
+		var nodes, springForce, coulombForce, totalForceOnNode=[0,0,0], numNodes, nodeIndex, node, vertexIndex, vertex, timeDiff=0.06, totalSpeed, weightTime, dampeningRandomizer=1;
 		
 		that.frameNumber += 1;
 		
@@ -107,9 +107,12 @@ Controllers.ForceDirected.prototype.calculateStep = function() {
 		
 		nodes = that.getNodes();
 		numNodes = nodes.length;
-		
+
 		if (that.frameNumber % 1 === 0) {
 		
+			// Using a fixed dampening can cause oscillations		
+			dampeningRandomizer = that.dampening*(1+Math.random()*(1/8)-(1/16));
+	
 			for (nodeIndex=nodes.length-1; nodeIndex >= 0; nodeIndex-=1) {
 				
 				node = nodes[nodeIndex];
@@ -166,9 +169,9 @@ Controllers.ForceDirected.prototype.calculateStep = function() {
 				}
 	
 				// Friction to slow down the node
-				node.velocity[0] *= that.dampening * Math.pow((1 - totalSpeed/that.maxSpeed),1/1000);
-				node.velocity[1] *= that.dampening * Math.pow((1 - totalSpeed/that.maxSpeed),1/10000);
-				node.velocity[2] *= that.dampening * Math.pow((1 - totalSpeed/that.maxSpeed),1/10000);
+				node.velocity[0] *= dampeningRandomizer;
+				node.velocity[1] *= dampeningRandomizer;
+				node.velocity[2] *= dampeningRandomizer;
 				
 				// Move the node
 				node.x += node.velocity[0] * timeDiff;
@@ -177,15 +180,22 @@ Controllers.ForceDirected.prototype.calculateStep = function() {
 			}
 		}
 		else {
+			// No calculation of node forces, only dampening & node movement based on current velocity
 			for (nodeIndex=nodes.length-1; nodeIndex >= 0; nodeIndex-=1) {
 				node = nodes[nodeIndex];
+							
+				// Friction to slow down the node
+				node.velocity[0] *= dampeningRandomizer;
+				node.velocity[1] *= dampeningRandomizer;
+				node.velocity[2] *= dampeningRandomizer;
 				
-				
+				// Move the node
 				node.x += node.velocity[0] * timeDiff;
 				node.y += node.velocity[1] * timeDiff;
 				node.z += node.velocity[2] * timeDiff;
 			}
 		}
+		
 		that.removeDrift();
 		that.recenterGraph();
 	

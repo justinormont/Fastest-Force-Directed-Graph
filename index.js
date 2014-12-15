@@ -38,7 +38,7 @@ function createRandomTree(model) {
 	for (i=1; i<numNodes; i++) { // i=0 is the root node, and is excluded from this loop
 		if (i < numNodes*0.05) { model.addVerticies(nodes[i], nodes[0]); }
 		else { 
-			parentNode = nodes[Math.floor((i-0.3) * Math.random() * Math.random() * Math.random() * Math.random() + 0.3)];
+			parentNode = nodes[Math.floor((i-0.3) * Math.pow(Math.random(),4) + 0.3)]; // Select low number nodes
 			nodes[i].x = parentNode.x + (Math.random()-0.5)*1000;
 			nodes[i].y = parentNode.y + (Math.random()-0.5)*1000;
 			nodes[i].z = parentNode.z + (Math.random()-0.5)*1000;
@@ -56,7 +56,8 @@ function createRandomTree(model) {
 	//	model.addVerticies(nodes[Math.floor(i * Math.random())], nodes[Math.floor(i * Math.random())]);
 	//}
 	
-	setInterval(addNode, 1000);
+	// Add an additional node every N ms.
+	setInterval(function(){ if (!document.hidden) {addNode(false)}}, 1000);
 };
 
 // Reads an Adjacency List and adds the corresponding edges and required nodes to the model
@@ -74,7 +75,7 @@ function readAdjacencyList(model, adjacencyList) {
 	adjacencyList.forEach(function(edge) {
 		if (!nodeNameMap.hasOwnProperty(edge[0])) { nodeNameMap[edge[0]]=numNodes; numNodes+=1; }
 		if (!nodeNameMap.hasOwnProperty(edge[1])) { nodeNameMap[edge[1]]=numNodes; numNodes+=1; }
-	});	
+	});
 	
 	// Create the nodes
 	for (i=0; i<numNodes; i++) {
@@ -85,39 +86,40 @@ function readAdjacencyList(model, adjacencyList) {
 		
 	// Connect nodes from the adjacency list
 	adjacencyList.forEach(function(edge) {
-		model.addVerticies(nodes[nodeNameMap[edge[0]]], nodes[nodeNameMap[edge[1]]]);
+		model.addVerticies(nodes[nodeNameMap[edge[0]]], nodes[nodeNameMap[edge[1]]]);					
 	});
 }
 
 function downloadAdjacencyList(model, url) {
-		"use strict";		
-		
-		var xmlhttp = new XMLHttpRequest();
-		
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				var json = JSON.parse(xmlhttp.responseText);
-				readAdjacencyList(model, json.adjacencyList);
-				
-				// Apply controller settings				
-				if (json.temporalSmoothing) { controller.temporalSmoothing = json.temporalSmoothing; }				
-				if (json.springMultiplier) { controller.springMultiplier = json.springMultiplier; }
-				if (json.dampening) { controller.dampening = json.dampening; }
-			}
+	"use strict";		
+	
+	var xmlhttp = new XMLHttpRequest();
+	
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			var json = JSON.parse(xmlhttp.responseText);
+			readAdjacencyList(model, json.adjacencyList);
+			
+			// Apply controller settings				
+			if (json.temporalSmoothing) { controller.temporalSmoothing = json.temporalSmoothing; }				
+			if (json.springMultiplier) { controller.springMultiplier = json.springMultiplier; }
+			if (json.dampening) { controller.dampening = json.dampening; }
 		}
-		xmlhttp.open("GET", url, true);
-		xmlhttp.send();
 	}
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
+}
 
-function addNode() {
+function addNode(uniformProbability) {
 	"use strict";
 	
-	var node, parentNode, nodes;
+	var node, parentNode, parentNodeIndex, nodes;
 	
 	node = new model.Node();
 	nodes = model.getNodes();
 	
-	parentNode = nodes[Math.floor(nodes.length * Math.random() * Math.random() * Math.random() * Math.random())];
+	parentNodeIndex	 = (uniformProbability===true?Math.floor(nodes.length * Math.random()):Math.floor(nodes.length * Math.pow(Math.random(),4)));
+	parentNode = nodes[parentNodeIndex];
 	node.x = parentNode.x + (Math.random()-0.5)*5;
 	node.y = parentNode.y + (Math.random()-0.5)*5;
 	node.z = parentNode.z + (Math.random()-0.5)*5;

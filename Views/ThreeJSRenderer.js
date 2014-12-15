@@ -19,6 +19,8 @@ Views.ThreeJS = function(graph) {
 	this.geometries = [];
 	this.renderingObjectsForNodes = [];
 	
+	this.frameNumber = 0;	
+	
 	this.lines;
 	
 	// Run
@@ -201,6 +203,12 @@ Views.ThreeJS.prototype.init = function() {
 	this.light = new THREE.PointLight(0xffffff, 1, 0);
 	this.scene.add(this.light);
 	
+	this.lightRight = new THREE.DirectionalLight(0xff0000, .5);
+	this.scene.add(this.lightRight);
+
+	this.lightLeft = new THREE.DirectionalLight(0x0000ff, .5);	
+	this.scene.add(this.lightLeft);
+		
 	var that = this;
 	
 	// Node geometry
@@ -241,8 +249,18 @@ Views.ThreeJS.prototype.init = function() {
 		info.setAttributeNode(id_attr);
 		document.body.appendChild( info );
 	}
+	
+	window.addEventListener( 'resize', function() { that.onWindowResize.call(that); }, false );
 };
 
+Views.ThreeJS.prototype.onWindowResize = function() {
+	"use strict";
+	
+	this.camera.aspect = window.innerWidth / window.innerHeight;
+	this.camera.updateProjectionMatrix();
+
+	this.renderer.setSize( window.innerWidth, window.innerHeight )
+}	;
 
 Views.ThreeJS.prototype.addBox = function(box) {
 	"use strict";
@@ -303,7 +321,7 @@ Views.ThreeJS.prototype.addNode = function(node) {
 		material = this.spriteMaterials[materialID];
 		
 		renderingObj = new THREE.Sprite(material);
-		renderingObj.scale.x = renderingObj.scale.y = 140;
+		renderingObj.scale.x = renderingObj.scale.y = 140 * node.scale;
 	}
 	else {
 		this.spheresCreated = (this.spheresCreated||0) + 1;
@@ -314,10 +332,10 @@ Views.ThreeJS.prototype.addNode = function(node) {
 		if (!this.sphereMaterials) { 
 			this.sphereMaterials = []; 
 		
-			this.sphereMaterials[0] = new THREE.MeshPhongMaterial({color: 'rgb(1,64,202)', ambient:'rgb(1,64,202)', specular: 0x333333});
-			this.sphereMaterials[1] = new THREE.MeshPhongMaterial({color: 'rgb(221,24,18)', ambient:'rgb(221,24,18)', specular: 0x333333});
-			this.sphereMaterials[2] = new THREE.MeshPhongMaterial({color: 'rgb(252,202,3)', ambient:'rgb(252,202,3)', specular: 0x333333});
-			this.sphereMaterials[3] = new THREE.MeshPhongMaterial({color: 'rgb(22,166,30)', ambient:'rgb(22,166,30)', specular: 0x333333});
+			this.sphereMaterials[0] = new THREE.MeshPhongMaterial({color: 'rgb(1,64,202)', specular: 0x333333, shininess: 10});
+			this.sphereMaterials[1] = new THREE.MeshPhongMaterial({color: 'rgb(221,24,18)', specular: 0x333333, shininess: 10});
+			this.sphereMaterials[2] = new THREE.MeshPhongMaterial({color: 'rgb(252,202,3)', specular: 0x333333, shininess: 10});
+			this.sphereMaterials[3] = new THREE.MeshPhongMaterial({color: 'rgb(22,166,30)', specular: 0x333333, shininess: 10});
 		}
 		if (!this.sphereMaterials[materialID]) { 
 			 console.log("Creating sphere material #" + materialID);
@@ -336,7 +354,7 @@ Views.ThreeJS.prototype.addNode = function(node) {
 		//renderingObj = new THREE.ParticleSystem(this.nodeGeometry, new THREE.ParticleBasicMaterial({color: 0xFFFFFF, size: 20}));
 		renderingObj = new THREE.Mesh(this.nodeGeometry, material);
 		
-		renderingObj.scale.x = renderingObj.scale.y = renderingObj.scale.z = 3;
+		renderingObj.scale.x = renderingObj.scale.y = renderingObj.scale.z = 3 * node.scale;
 		
 	}
 
@@ -417,7 +435,6 @@ Views.ThreeJS.prototype.drawEdgeSingleGeo = function(source, target) {
 	if (!this.material) { 
 		console.log("Created material"); 
 		this.material = new THREE.LineBasicMaterial( { blending: THREE.AdditiveBlending, color: 0xffffff, opacity: 1, linewidth: 3, vertexColors: THREE.VertexColors } );
- 
 	}
 	
 	console.log("Created Edge");
@@ -458,7 +475,6 @@ Views.ThreeJS.prototype.drawEdgeSingleGeoBufferGeometry = function(source, targe
 	if (!this.material) { 
 		console.log("Created material"); 
 		this.material = new THREE.LineBasicMaterial( { blending: THREE.AdditiveBlending, color: 0xffffff, opacity: 1, linewidth: 3, vertexColors: THREE.VertexColors } );
- 
 	}
 	
 	console.log("Created Edge");
@@ -499,7 +515,7 @@ Views.ThreeJS.prototype.drawEdge = function(source, target) {
 	
 	if (!this.material) { 
 		console.log("Created material"); 
-		this.material = new THREE.LineBasicMaterial({ blending: THREE.AdditiveBlending, color: 0x444444, /* opacity: 0.3,*/ linewidth: 4 }); 
+		this.material = new THREE.LineBasicMaterial({ blending: THREE.AdditiveBlending, color: 0x444444, /* opacity: 0.3,*/ linewidth: 4, transparent:true }); 
 	}
 	
 	console.log("Created Edge");
@@ -534,6 +550,9 @@ Views.ThreeJS.prototype.animate = function() {
 		that.controls.update();
 		
 		that.light.position.copy(that.camera.position);
+		that.lightRight.position.crossVectors(that.camera.up, that.camera.position);
+		that.lightLeft.position.crossVectors(that.camera.position, that.camera.up);
+			
 		
 		that.render();
 	

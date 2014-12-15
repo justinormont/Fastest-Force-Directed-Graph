@@ -36,6 +36,8 @@ Utils.Octree = function(options) {
 	
 	//this.head = new this.OctreeNode([-10000, -10000, -10000], [10000, 10000, 10000]);
 	this.head = this.OctreeNodeFactory([-10000, -10000, -10000], [10000, 10000, 10000]);
+	this.head.nodeId = this.calculateNodeId(null, 7, 0);  
+					
 };
 
 // Searches recursively for the right place to add an element
@@ -69,6 +71,7 @@ Utils.Octree.prototype.addElement = function(octreeNode, element) {
 	
 	if (octreeNode.isLeafNode) {
 		octreeNode.elements.push(element);
+		element.octreeNode = octreeNode;
 		if (octreeNode.elements.length > this.maxElementsPerNode && octreeNode.depth < this.maxDepth) {
 			this.splitOctreeNode(octreeNode);
 		}
@@ -397,6 +400,23 @@ Utils.Octree.prototype.octreeNodeChildren = function(octreeNode, requireElements
 	return childrenNodes;
 }
 
+Utils.Octree.prototype.calculateNodeId = function(parentNode, positionInParentNode, depth) {
+	"use strict";
+
+	var nodeId;
+
+	if (!parentNode && depth!==0) { throw new Error("ParentNode node must be defined when depth >0"); }
+	if (parentNode && depth===0) { throw new Error("ParentNode can not be defined when depth is 0"); }
+	if (!(positionInParentNode>=0 && positionInParentNode<=7 && Math.floor(positionInParentNode)===positionInParentNode)) { 
+		throw new Error("PositionInParentNode must be an int 0..8"); 
+	}
+	
+	nodeId = (parentNode?parentNode.nodeId:0);
+	
+	nodeId = nodeId + (positionInParentNode * Math.pow(8, 17-depth)); // Note: Bitwise operators only work until 32-bit, normal ints work until 53-bit
+	
+	return nodeId;
+};
 
 Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element, createChildIfNeeded) {
 	"use strict";
@@ -412,6 +432,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMinXMinYMinZ = this.OctreeNodeFactory([octreeNode.minX, octreeNode.minY, octreeNode.minZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 0, childNode.depth);  
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -420,6 +441,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMinXMinYMaxZ = this.OctreeNodeFactory([octreeNode.minX, octreeNode.minY, octreeNode.maxZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 1, childNode.depth);
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -430,6 +452,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMinXMaxYMinZ = this.OctreeNodeFactory([octreeNode.minX, octreeNode.maxY, octreeNode.minZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 2, childNode.depth);
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -438,6 +461,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMinXMaxYMaxZ = this.OctreeNodeFactory([octreeNode.minX, octreeNode.maxY, octreeNode.maxZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 3, childNode.depth);					
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -451,6 +475,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMaxXMinYMinZ = this.OctreeNodeFactory([octreeNode.maxX, octreeNode.minY, octreeNode.minZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 4, childNode.depth);					
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -459,6 +484,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMaxXMinYMaxZ = this.OctreeNodeFactory([octreeNode.maxX, octreeNode.minY, octreeNode.maxZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 5, childNode.depth);					
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -469,6 +495,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMaxXMaxYMinZ = this.OctreeNodeFactory([octreeNode.maxX, octreeNode.maxY, octreeNode.minZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 6, childNode.depth);					
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -477,6 +504,7 @@ Utils.Octree.prototype.findCorrectChildOctreeNode = function(octreeNode, element
 				if (!childNode && createChildIfNeeded) { 
 					if (octreeNode.isLeafNode) { throw "Error: Can't add a child node to a leaf node"; }
 					childNode = octreeNode.subNodeMaxXMaxYMaxZ = this.OctreeNodeFactory([octreeNode.maxX, octreeNode.maxY, octreeNode.maxZ], octreeNode); 
+					childNode.nodeId = this.calculateNodeId(octreeNode, 7, childNode.depth);					
 					octreeNode.subNodeCount+=1; 
 				}
 			}
@@ -625,6 +653,7 @@ Utils.Octree.prototype.OctreeNode.prototype.init = function(cornerA /* [x, y, z]
 	this.weight = 0;				// The total weight of the elements within this node, or below it
 	this.elementsWithin = 0;		// The total count of the elements within this node, or below it
 	this.depth = (this.parentNode?this.parentNode.depth+1:0); // The tree depth of the node
+	this.nodeId = null;			// The ID of the node given by its position in the tree
 
 	// Weighted average of the node's elements
 	this.avgX = this.midX;	
