@@ -9,7 +9,7 @@ I'm looking to reimplement in JavaScript a former mixed C++/JavaScript project o
 
 Former Project of Mine
 ============================
-Info: http://blog.launch.co/blog/take-that-google-interactive-google-stream-visualizer-launch.html
+Info: http://www.launch.co/blog/take-that-google-interactive-google-stream-visualizer-launch.html ([YouTube](https://www.youtube.com/watch?v=_B-ij4Hl6Fg))
 ![Former Project](https://i.ytimg.com/vi/_B-ij4Hl6Fg/maxresdefault.jpg "Former C++/JavaScript Project of Mine - StreamVisualizer")
 
 Current Project
